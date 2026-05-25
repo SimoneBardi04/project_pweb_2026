@@ -19,7 +19,12 @@ def get_all_events(session: SessionDep) -> list[Event]:
 @router.post("", response_model=EventCreate, status_code=status.HTTP_201_CREATED)
 def create_event(event: EventCreate, session: SessionDep):
 
-    db_event=Event.model_validate(event) #Converte EventCreate in Event
+    db_event=Event(
+        title=event.title,
+        description=event.description,
+        data=event.date,
+        location=event.location
+    )
 
 
     session.add(db_event)   # Aggiungo l'evento ricevuto dal frontend al database

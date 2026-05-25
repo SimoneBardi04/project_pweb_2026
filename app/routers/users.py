@@ -5,9 +5,9 @@ from app.data.db import SessionDep
 from typing import Annotated
 from sqlmodel import select, delete
 
-user_router = APIRouter(prefix="/users", tags=["Users"])
+router = APIRouter(prefix="/users", tags=["Users"])
 
-@user_router.get("/")
+@router.get("/")
 def get_all_user(
     session: SessionDep,
     sort: Annotated[bool, Query(description="Ordinami gli utenti in ordine crescente o decrescente")]=False
@@ -21,7 +21,7 @@ def get_all_user(
     else:
         return list(users)
 
-@user_router.get("/{username}")
+@router.get("/{username}")
 def get_user_by_username(
     session: SessionDep,
     username: Annotated[str, Path(description="Username dell'utente")]
@@ -35,7 +35,7 @@ def get_user_by_username(
     else:
         raise HTTPException(status_code=404, detail="Utente non trovato")
     
-@user_router.post("/")
+@router.post("/")
 def new_user(
     session:SessionDep,
     user:UserCreate):
@@ -53,7 +53,7 @@ def new_user(
         session.commit()
         return "Utente aggiunto con successo"
     
-@user_router.delete("/")
+@router.delete("/")
 def delete_users(
     session: SessionDep
 ):
@@ -61,7 +61,7 @@ def delete_users(
     session.commit()
     return "Tutti gli utenti sono stati eliminati"
 
-@user_router.delete("/{username}")
+@router.delete("/{username}")
 def delete_user(
     session: SessionDep,
     username: Annotated[str, Path(description="Username dell'utente")]
