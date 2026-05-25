@@ -38,7 +38,7 @@ app.mount(
 )
 app.include_router(frontend.router)
 app.include_router(user.user_router) # Implementata da Simone
-app.include_router(events.event_router) #Aggiunta JJ
+app.include_router(events.router) #Aggiunta JJ
 app.include_router(registrations.registration_router) # Implementata da Simone
 
 if __name__ == "__main__":
