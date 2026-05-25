@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Path, HTTPException, Query
-from app.models.userDB import User
+from app.models.userDB import User, UserCreate
 from app.models.registration import Registration
 from app.data.db import SessionDep
 from typing import Annotated
@@ -38,7 +38,8 @@ def get_user_by_username(
 @user_router.post("/")
 def new_user(
     session:SessionDep,
-    user:User):
+    user:UserCreate):
+    
     #Aggiungi un nuovo utente
     
     userExist=session.get(User, user.username)

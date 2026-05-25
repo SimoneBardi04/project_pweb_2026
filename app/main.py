@@ -15,7 +15,7 @@ if Path(__file__).parent == Path(os.getcwd()):
 from fastapi import FastAPI
 from app.routers import frontend
 from app.routers import user
-from app.routers import event #Aggiunta jj
+from app.routers import events #Aggiunta jj
 from app.routers import registrations    
 from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
@@ -38,7 +38,7 @@ app.mount(
 )
 app.include_router(frontend.router)
 app.include_router(user.user_router) # Implementata da Simone
-app.include_router(event.event_router) #Aggiunta JJ
+app.include_router(events.event_router) #Aggiunta JJ
 app.include_router(registrations.registration_router) # Implementata da Simone
 
 if __name__ == "__main__":
