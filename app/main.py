@@ -37,7 +37,7 @@ app.mount(
     name="static"
 )
 app.include_router(frontend.router)
-app.include_router(users.user_router) # Implementata da Simone
+app.include_router(users.router) # Implementata da Simone
 app.include_router(events.router) #Aggiunta JJ
 app.include_router(registrations.registration_router) # Implementata da Simone
 
