@@ -9,3 +9,9 @@ class Event(SQLModel, table=True):
     description: str
     date: datetime
     location: str
+
+class EventCreate(SQLModel):
+    title: str
+    description: str
+    date: datetime
+    location: str
