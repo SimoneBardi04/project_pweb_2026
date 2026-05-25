@@ -4,13 +4,14 @@ from app.data.db import SessionDep
 from typing import Annotated
 from sqlmodel import select
 
-registration_router=APIRouter(prefix="/registrations", tags=["Registrations"])
+router=APIRouter(prefix="/registrations", tags=["Registrations"])
 
-@registration_router.get("/")
+@router.get("/")
 def gell_all_registration(
     session: SessionDep,
     sort: Annotated[bool, Query(description="Ordinami gli utenti in ordine crescente o decrescente")]=False
 ):
+    """Restituisce la lista di tutte le registrazioni."""
     registration= session.exec(select(Registration))
 
    
@@ -19,13 +20,13 @@ def gell_all_registration(
     else:
         return list(registration)
     
-@registration_router.delete("/")
+@router.delete("/")
 def delete_registration(
     session:SessionDep,
     username: Annotated[str, Query(description="Username dell'utente")],
     event_id: Annotated[str, Query(description="Id dell'evento")]
 ):
-    
+    """Elimina una registrazione specificata da username ed event_id."""
     registrazione = session.get(Registration, (username, event_id))
 
     if not registrazione:
