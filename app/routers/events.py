@@ -11,6 +11,8 @@ router = APIRouter(prefix="/events", tags=["Events"])
 
 @router.get("")
 def get_all_events(session: SessionDep) -> list[Event]:
+    """Restituisce la lista di tutti gli eventi."""
+
     eventi = session.exec(select(Event)).all()  #Serve per eseguiire la domanda
     return eventi
 
@@ -18,25 +20,26 @@ def get_all_events(session: SessionDep) -> list[Event]:
 # 3. API: Crea un nuovo evento (POST /events)
 @router.post("", response_model=EventCreate, status_code=status.HTTP_201_CREATED)
 def create_event(event: EventCreate, session: SessionDep):
+    """Crea un nuovo evento."""
 
     db_event=Event(
         title=event.title,
         description=event.description,
-        data=event.date,
+        date=event.date,
         location=event.location
     )
 
 
     session.add(db_event)   # Aggiungo l'evento ricevuto dal frontend al database
     session.commit()  # Salvo le modifiche
-    session.refresh(event)  # Aggiorno i dati
+    session.refresh(db_event)  # Aggiorno i dati
 
     return event
 
 
 @router.get("/{id}", response_model=Event, status_code=status.HTTP_200_OK)
 def get_event(id: int, session: SessionDep):
-
+    """Restituisce l'evento con l'id indicato."""
 
     evento = session.get(Event, id)   #Per andare a cercare uno specifico evento
 
@@ -49,7 +52,7 @@ def get_event(id: int, session: SessionDep):
 
 @router.put("/{id}", response_model=Event, status_code=status.HTTP_200_OK)
 def update_event(id: int, event_update: EventCreate, session: SessionDep):
-
+    """Aggiorna un evento esistente."""
 
     evento_db = session.get(Event, id)  #cerco se levento esiste
 
@@ -79,7 +82,7 @@ def update_event(id: int, event_update: EventCreate, session: SessionDep):
 
 @router.post("/{id}/register", status_code=status.HTTP_200_OK)
 def register_user_to_event(id: int, user_data: UserCreate, session: SessionDep):
-
+    """Registra un utente all'evento indicato."""
 
     evento = session.get(Event, id)
     if not evento:

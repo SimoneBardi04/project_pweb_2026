@@ -12,7 +12,7 @@ def get_all_user(
     session: SessionDep,
     sort: Annotated[bool, Query(description="Ordinami gli utenti in ordine crescente o decrescente")]=False
     )->list[User]:
-    # Restituisce la lista di tutti gli utenti
+    """Restituisce la lista di tutti gli utenti."""
 
     users = session.exec(select(User))
 
@@ -26,7 +26,7 @@ def get_user_by_username(
     session: SessionDep,
     username: Annotated[str, Path(description="Username dell'utente")]
     )->User:
-    #Restituisce l'utente con l'username cercato
+    """Restituisce l'utente con l'username indicato."""
 
     user=session.get(User, username)
 
@@ -39,9 +39,8 @@ def get_user_by_username(
 def new_user(
     session:SessionDep,
     user:UserCreate):
-    
-    #Aggiungi un nuovo utente
-    
+    """Crea un nuovo utente."""
+
     userExist=session.get(User, user.username)
     
     if userExist:
@@ -57,6 +56,7 @@ def new_user(
 def delete_users(
     session: SessionDep
 ):
+    """Elimina tutti gli utenti."""
     session.exec(delete(User))
     session.commit()
     return "Tutti gli utenti sono stati eliminati"
@@ -66,6 +66,7 @@ def delete_user(
     session: SessionDep,
     username: Annotated[str, Path(description="Username dell'utente")]
 ):
+    """Elimina l'utente con l'username indicato e le sue registrazioni."""
     user=session.get(User, username)
 
     if not user:
