@@ -39,7 +39,7 @@ app.mount(
 app.include_router(frontend.router)
 app.include_router(users.router) # Implementata da Simone
 app.include_router(events.router) #Aggiunta JJ
-app.include_router(registrations.registration_router) # Implementata da Simone
+app.include_router(registrations.router) # Implementata da Simone
 
 if __name__ == "__main__":
     import uvicorn
