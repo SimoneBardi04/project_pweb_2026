@@ -14,7 +14,7 @@ if Path(__file__).parent == Path(os.getcwd()):
 
 from fastapi import FastAPI
 from app.routers import frontend
-from app.routers import user
+from app.routers import users
 from app.routers import events #Aggiunta jj
 from app.routers import registrations    
 from fastapi.staticfiles import StaticFiles
@@ -37,7 +37,7 @@ app.mount(
     name="static"
 )
 app.include_router(frontend.router)
-app.include_router(user.user_router) # Implementata da Simone
+app.include_router(users.user_router) # Implementata da Simone
 app.include_router(events.router) #Aggiunta JJ
 app.include_router(registrations.registration_router) # Implementata da Simone
 

@@ -17,13 +17,12 @@ def get_all_events(session: SessionDep) -> list[Event]:
 
 # 3. API: Crea un nuovo evento (POST /events)
 @router.post("", response_model=EventCreate, status_code=status.HTTP_201_CREATED)
-def create_event(event: Event, session: SessionDep):
+def create_event(event: EventCreate, session: SessionDep):
 
-    if isinstance(event.date, str):
-        event.date = datetime.fromisoformat(event.date)  #data stringa diventa data vera
+    db_event=Event.model_validate(event) #Converte EventCreate in Event
 
 
-    session.add(event)   # Aggiungo l'evento ricevuto dal frontend al database
+    session.add(db_event)   # Aggiungo l'evento ricevuto dal frontend al database
     session.commit()  # Salvo le modifiche
     session.refresh(event)  # Aggiorno i dati
 
