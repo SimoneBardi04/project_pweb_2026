@@ -1,38 +1,45 @@
 from fastapi import APIRouter, HTTPException, status
-from app.models.eventDB import Event
-from app.models.userDB import User
+from app.models.eventDB import Event, EventCreate
+from app.models.userDB import User, UserCreate
 from app.models.registration import Registration
 from app.data.db import SessionDep
 from sqlmodel import select
 from datetime import datetime
 
-event_router = APIRouter(prefix="/events", tags=["Events"])
+router = APIRouter(prefix="/events", tags=["Events"])
 
 
-@event_router.get("")
+@router.get("")
 def get_all_events(session: SessionDep) -> list[Event]:
+    """Restituisce la lista di tutti gli eventi."""
+
     eventi = session.exec(select(Event)).all()  #Serve per eseguiire la domanda
     return eventi
 
 
 # 3. API: Crea un nuovo evento (POST /events)
-@event_router.post("", response_model=Event, status_code=status.HTTP_201_CREATED)
-def create_event(event: Event, session: SessionDep):
+@router.post("", response_model=EventCreate, status_code=status.HTTP_201_CREATED)
+def create_event(event: EventCreate, session: SessionDep):
+    """Crea un nuovo evento."""
 
-    if isinstance(event.date, str):
-        event.date = datetime.fromisoformat(event.date)  #data stringa diventa data vera
+    db_event=Event(
+        title=event.title,
+        description=event.description,
+        date=event.date,
+        location=event.location
+    )
 
 
-    session.add(event)   # Aggiungo l'evento ricevuto dal frontend al database
+    session.add(db_event)   # Aggiungo l'evento ricevuto dal frontend al database
     session.commit()  # Salvo le modifiche
-    session.refresh(event)  # Aggiorno i dati
+    session.refresh(db_event)  # Aggiorno i dati
 
     return event
 
 
-@event_router.get("/{id}", response_model=Event, status_code=status.HTTP_200_OK)
+@router.get("/{id}", response_model=Event, status_code=status.HTTP_200_OK)
 def get_event(id: int, session: SessionDep):
-
+    """Restituisce l'evento con l'id indicato."""
 
     evento = session.get(Event, id)   #Per andare a cercare uno specifico evento
 
@@ -43,9 +50,9 @@ def get_event(id: int, session: SessionDep):
     return evento
 
 
-@event_router.put("/{id}", response_model=Event, status_code=status.HTTP_200_OK)
-def update_event(id: int, event_update: Event, session: SessionDep):
-
+@router.put("/{id}", response_model=Event, status_code=status.HTTP_200_OK)
+def update_event(id: int, event_update: EventCreate, session: SessionDep):
+    """Aggiorna un evento esistente."""
 
     evento_db = session.get(Event, id)  #cerco se levento esiste
 
@@ -73,9 +80,9 @@ def update_event(id: int, event_update: Event, session: SessionDep):
     return evento_db
 
 
-@event_router.post("/{id}/register", status_code=status.HTTP_200_OK)
-def register_user_to_event(id: int, user_data: User, session: SessionDep):
-
+@router.post("/{id}/register", status_code=status.HTTP_200_OK)
+def register_user_to_event(id: int, user_data: UserCreate, session: SessionDep):
+    """Registra un utente all'evento indicato."""
 
     evento = session.get(Event, id)
     if not evento:
@@ -105,7 +112,7 @@ def register_user_to_event(id: int, user_data: User, session: SessionDep):
     return {"message": f"Utente {user_data.username} registrato all'evento {id} con successo"}
 
 
-@event_router.delete("/{id}", status_code=status.HTTP_200_OK)
+@router.delete("/{id}", status_code=status.HTTP_200_OK)
 def delete_single_event(id: int, session: SessionDep):
     """
     Elimina un evento e tutte le registrazioni ad esso associate.
@@ -126,7 +133,7 @@ def delete_single_event(id: int, session: SessionDep):
     return {"message": "Evento e registrazioni associate eliminati con successo"}
 
 
-@event_router.delete("", status_code=status.HTTP_200_OK)
+@router.delete("", status_code=status.HTTP_200_OK)
 def delete_all_events(session: SessionDep):
     """
     Elimina letteralmente tutti gli eventi presenti nel database.

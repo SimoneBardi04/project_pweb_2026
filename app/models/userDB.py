@@ -7,5 +7,11 @@ class User(SQLModel, table=True):
     name : str
     email : str
 
+class UserCreate(SQLModel):
+    username: str
+    name: str
+    email:str
+
+
 
 
