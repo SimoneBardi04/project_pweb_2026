@@ -44,8 +44,7 @@ def new_user(
     userExist=session.get(User, user.username)
     
     if userExist:
-        raise HTTPException(status_code=409, detail="L'Username esiste già non trovato")
-        #TODO: Controllare meglio l'errore come viene mostrato, possibile fix?
+        raise HTTPException(status_code=409, detail="L'Username esiste già")
     else:
         newUser = User.model_validate(user)
         session.add(newUser)
